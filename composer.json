@@ -1,0 +1,54 @@
+{
+    "name": "leeovery/laravel-settings",
+    "description": "",
+    "keywords": [
+        "leeovery",
+        "laravel-settings"
+    ],
+    "homepage": "https://github.com/leeovery/laravel-settings",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Lee Overy",
+            "email": "me@leeovery.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "5.8.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.8.*",
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Leeovery\\LaravelSettings\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Leeovery\\LaravelSettings\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Leeovery\\LaravelSettings\\LaravelSettingsServiceProvider"
+            ],
+            "aliases": {
+                "LaravelSettings": "Leeovery\\LaravelSettings\\LaravelSettingsFacade"
+            }
+        }
+    }
+}
