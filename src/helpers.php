@@ -1,20 +1,15 @@
 <?php
 
 if (! function_exists('settings')) {
-    function settings($key = null, $userId = null)
+    function settings($baseKey = null, $userId = null)
     {
         $setting = app('laravel-settings');
 
-        if (is_null($key)) {
+        if (is_null($baseKey)) {
             return $setting;
         }
 
-        if (is_array($key)) {
-            $setting->set($key, $userId);
-
-            return $setting;
-        }
-
-        return $setting->get($key, $userId);
+        return $setting->baseKey($baseKey)
+                       ->forUser($userId);
     }
 }

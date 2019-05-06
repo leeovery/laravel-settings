@@ -80,7 +80,7 @@ class LaravelSettingsServiceProvider extends ServiceProvider
         $this->app->bind(DefaultRepository::class, $config['defaults']['provider']);
         $this->app->bind(CacheRepository::class, $config['cache']['provider']);
 
-        $this->app->singleton('laravel-settings', function (Container $app) {
+        $this->app->bind('laravel-settings', function (Container $app) {
             return new LaravelSettings(
                 $app->make(DefaultRepository::class),
                 $app->make(CacheRepository::class)
