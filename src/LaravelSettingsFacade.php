@@ -4,9 +4,6 @@ namespace Leeovery\LaravelSettings;
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see \Leeovery\LaravelSettings\Skeleton\SkeletonClass
- */
 class LaravelSettingsFacade extends Facade
 {
     /**
