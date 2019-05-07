@@ -3,12 +3,19 @@
 namespace Leeovery\LaravelSettings\Defaults;
 
 use Illuminate\Support\Collection;
+use Leeovery\LaravelSettings\Exceptions\InvalidSettingsKey;
 
 class FileDefaultRepository implements DefaultRepository
 {
     public function get(string $key): Collection
     {
-        return collect(config($this->makeKey($key)));
+        $defaults = collect(config($this->makeKey($key)));
+
+        if ($defaults->isEmpty()) {
+            throw new InvalidSettingsKey;
+        }
+
+        return $defaults;
     }
 
     private function makeKey($key)

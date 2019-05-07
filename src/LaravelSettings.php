@@ -51,32 +51,41 @@ class LaravelSettings
 
     public function set(array $newSettings)
     {
+        // Fetch defaults and merge in any custom settings for user
         /** @var Collection $settings */
         $settings = $this->get()->all();
 
+        // If current settings we fetched above has the keys from
+        // the new settings we're trying to set, then go ahead
+        // and set them using dot notation.
         foreach ($newSettings as $key => $value) {
             if (Arr::has($settings, $key)) {
                 data_set($settings, $key, $value);
             }
         }
 
+        // Now fetch defaults with no custom changes...
         /** @var Collection $defaults */
         $defaults = $this->defaultRepository->get($this->baseKey);
 
+        // Now remove all defaults from the new settings array we
+        // created above. Whatever's left over needs persisting.
         $forStoring = $this->arrayRecursiveDiff($settings, $defaults->all());
 
-        // get ALL stored settings for user
+        // Get ALL stored settings for user.
         $allStoredSettings = optional($this->getStoredSettings())->settings;
 
         // if we have nothing to store and stored settings is not null...
-        if (empty($forStoring) && $allStoredSettings) {
+        if (empty($forStoring) && $allStoredSettings[$this->baseKey]) {
             unset($allStoredSettings[$this->baseKey]);
         } else {
-            $allStoredSettings[$this->baseKey] = $forStoring;
+            if (! empty($forStoring)) {
+                $allStoredSettings[$this->baseKey] = $forStoring;
+            }
         }
 
         // if $allStoredSettings is empty then we can delete settings for user
-        // else save
+        // else save...
         if (empty($allStoredSettings)) {
             $this->deleteSettingsForUser();
         } else {
@@ -89,15 +98,10 @@ class LaravelSettings
         /** @var Collection $settings */
         $settings = $this->defaultRepository->get($this->makeKey($key));
 
-        if (! is_null($this->userId) && $this->entityHasStoredSettings()) {
+        if (! is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
 
             // get ALL stored settings for user
             $storedSettings = collect($this->getStoredSettings()->settings[$this->baseKey]);
-
-            // does user have stored settings for this baseKey??
-            if ($storedSettings->isEmpty()) {
-                return $settings;
-            }
 
             // does stored settings have the key we are wanting?
             if (is_null($key) || $storedSettings->has($key)) {
@@ -117,9 +121,11 @@ class LaravelSettings
     /**
      * @return bool
      */
-    private function entityHasStoredSettings(): bool
+    private function entityHasStoredSettingsForBaseKey(): bool
     {
-        return Setting::where('user_id', $this->userId)->count() > 0;
+        return Setting::where('user_id', $this->userId)
+                      ->where('settings->'.$this->baseKey, '>', 0)
+                      ->count() > 0;
     }
 
     /**
@@ -142,7 +148,7 @@ class LaravelSettings
                         $aReturn[$mKey] = $aRecursiveDiff;
                     }
                 } else {
-                    if ($mValue != $aArray2[$mKey]) {
+                    if ($mValue !== $aArray2[$mKey]) {
                         $aReturn[$mKey] = $mValue;
                     }
                 }
