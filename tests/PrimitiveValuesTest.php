@@ -8,7 +8,7 @@ use Leeovery\LaravelSettings\Exceptions\InvalidSettingsKey;
 use Leeovery\LaravelSettings\LaravelSettings;
 use Leeovery\LaravelSettings\Setting;
 
-class LaravelSettingsTest extends TestCase
+class PrimitiveValuesTest extends TestCase
 {
     public $notificationSettings;
 

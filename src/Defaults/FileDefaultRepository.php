@@ -2,6 +2,7 @@
 
 namespace Leeovery\LaravelSettings\Defaults;
 
+use function DeepCopy\deep_copy;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -12,12 +13,14 @@ class FileDefaultRepository implements DefaultRepository
     public function get(string $key): Collection
     {
         $defaults = collect(
-            $this->ensureSubSetsAreProperlyKeyed($key, config($this->makeKey($key)))
+            $this->ensureSubSetsAreProperlyKeyed(
+                $key, config($this->makeKey($key))
+            )
         );
 
         throw_if($defaults->isEmpty(), InvalidSettingsKey::class);
 
-        return $defaults;
+        return deep_copy($defaults);
     }
 
     private function ensureSubSetsAreProperlyKeyed(string $key, $defaults)
