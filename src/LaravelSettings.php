@@ -35,6 +35,11 @@ class LaravelSettings
         $this->cacheRepository = $cacheRepository;
     }
 
+    public static function setting($value, $label = null, $validator = null)
+    {
+        return SettingStore::make($value, $label, $validator);
+    }
+
     public function baseKey($baseKey)
     {
         $this->baseKey = $baseKey;
@@ -55,12 +60,17 @@ class LaravelSettings
         /** @var Collection $settings */
         $settings = $this->get()->all();
 
-        // If current settings we fetched above has the keys from
-        // the new settings we're trying to set, then go ahead
-        // and set them using dot notation.
+        // If current settings we just fetched have the keys from the
+        // new settings we're trying to set, then go ahead and set.
         foreach ($newSettings as $key => $value) {
             if (Arr::has($settings, $key)) {
-                data_set($settings, $key, $value);
+                // If value here is an instance of SettingsStore then use method
+                // on object. Otherwise simply set value directly to array...
+                if (is_a($currentValue = Arr::get($settings, $key), SettingStore::class, true)) {
+                    $currentValue->set($value);
+                } else {
+                    data_set($settings, $key, $value);
+                }
             }
         }
 
@@ -101,13 +111,12 @@ class LaravelSettings
         if (! is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
 
             // get ALL stored settings for user
-            $storedSettings = collect($this->getStoredSettings()->settings[$this->baseKey]);
+            $storedSettings = $this->getStoredSettings()->settings[$this->baseKey];
 
             // does stored settings have the key we are wanting?
-            if (is_null($key) || $storedSettings->has($key)) {
-                $settings = collect(array_replace_recursive($settings->all(), $storedSettings->all()));
+            if (is_null($key) || Arr::has($storedSettings, $key)) {
+                $settings = $this->arrayRecursiveReplace($settings->all(), $storedSettings);
             }
-
         }
 
         return $settings;
@@ -124,7 +133,7 @@ class LaravelSettings
     private function entityHasStoredSettingsForBaseKey(): bool
     {
         return Setting::where('user_id', $this->userId)
-                      ->where('settings->'.$this->baseKey, '>', 0)
+                      ->where('settings', 'LIKE', "%{$this->baseKey}%")
                       ->count() > 0;
     }
 
@@ -136,28 +145,49 @@ class LaravelSettings
         return Setting::where('user_id', $this->userId)->first();
     }
 
-    private function arrayRecursiveDiff($aArray1, $aArray2)
+    public function arrayRecursiveReplace($settings, $fromStorage): Collection
     {
-        $aReturn = [];
-
-        foreach ($aArray1 as $mKey => $mValue) {
-            if (array_key_exists($mKey, $aArray2)) {
-                if (is_array($mValue)) {
-                    $aRecursiveDiff = $this->arrayRecursiveDiff($mValue, $aArray2[$mKey]);
-                    if (count($aRecursiveDiff)) {
-                        $aReturn[$mKey] = $aRecursiveDiff;
-                    }
+        foreach (Arr::dot($fromStorage) as $key => $value) {
+            if (Arr::has($settings, $key)) {
+                if (is_a($fromDefault = Arr::get($settings, $key), SettingStore::class, true)) {
+                    Arr::set($settings, $key, $fromDefault->set($value));
                 } else {
-                    if ($mValue !== $aArray2[$mKey]) {
-                        $aReturn[$mKey] = $mValue;
-                    }
+                    Arr::set($settings, $key, $value);
                 }
-            } else {
-                $aReturn[$mKey] = $mValue;
             }
         }
 
-        return $aReturn;
+        return collect($settings);
+    }
+
+    private function arrayRecursiveDiff($newSettings, $defaultSettings)
+    {
+        $storeTheseSettings = [];
+        foreach ($newSettings as $newSettingKey => $newSettingValue) {
+            if (array_key_exists($newSettingKey, $defaultSettings)) {
+                if (is_array($newSettingValue)) {
+                    $aRecursiveDiff = $this->arrayRecursiveDiff($newSettingValue, $defaultSettings[$newSettingKey]);
+                    if (count($aRecursiveDiff)) {
+                        $storeTheseSettings[$newSettingKey] = $aRecursiveDiff;
+                    }
+                } else {
+                    if (is_a($newSettingValue, SettingStore::class, true)) {
+                        if (! $newSettingValue->compareValues($defaultSettings[$newSettingKey])) {
+                            /** @var SettingStore $newSettingValue */
+                            $storeTheseSettings[$newSettingKey] = $newSettingValue->getValue();
+                        }
+                    } else {
+                        if ($newSettingValue !== $defaultSettings[$newSettingKey]) {
+                            $storeTheseSettings[$newSettingKey] = $newSettingValue;
+                        }
+                    }
+                }
+            } else {
+                $storeTheseSettings[$newSettingKey] = $newSettingValue;
+            }
+        }
+
+        return $storeTheseSettings;
     }
 
     private function deleteSettingsForUser()

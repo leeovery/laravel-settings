@@ -16,10 +16,11 @@
         }
     ],
     "require": {
-        "php" : "^7.2",
+        "php": "^7.2",
         "illuminate/config": "~5.8.0",
         "illuminate/database": "~5.8.0",
-        "illuminate/support": "~5.8.0"
+        "illuminate/support": "~5.8.0",
+        "myclabs/deep-copy": "^1.9"
     },
     "require-dev": {
         "orchestra/testbench": "^3.5",

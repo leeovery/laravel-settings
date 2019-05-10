@@ -8,7 +8,7 @@ use Leeovery\LaravelSettings\Exceptions\InvalidSettingsKey;
 use Leeovery\LaravelSettings\LaravelSettings;
 use Leeovery\LaravelSettings\Setting;
 
-class LaravelSettingsTest extends TestCase
+class PrimitiveValuesTest extends TestCase
 {
     public $notificationSettings;
 
@@ -177,5 +177,88 @@ class LaravelSettingsTest extends TestCase
     {
         $this->expectException(InvalidSettingsKey::class);
         settings('i-dont-exist', 1)->get();
+    }
+
+    /**
+     * @test
+     */
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_1()
+    {
+        $settings = settings('notifications-test', 1)->get('global');
+
+        $this->assertEquals($settings->all(), [
+            'global' => [
+                'email'    => true,
+                'sms'      => true,
+                'database' => true,
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_2()
+    {
+        $settings = settings('notifications-test', 1)->get('orders');
+
+        $this->assertEquals($settings->all(), [
+            'orders' => [
+                'new' => [
+                    'email'    => true,
+                    'sms'      => true,
+                    'database' => true,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_3()
+    {
+        $settings = settings('notifications-test', 1)->get('orders.new');
+
+        $this->assertEquals($settings->all(), [
+            'orders' => [
+                'new' => [
+                    'email'    => true,
+                    'sms'      => true,
+                    'database' => true,
+                ],
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_4()
+    {
+        $settings = settings('privacy-test', 1)->get('section1');
+
+        $this->assertEquals($settings->all(), [
+            'section1' => [
+                '111' => true,
+                '222' => true,
+                '333' => true,
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function ensure_can_fetch_using_subset_when_expecting_non_default_values()
+    {
+        settings('notifications-test', 1)
+            ->set([
+                'orders.new.email' => 'custom2',
+            ]);
+
+        $settings = settings('notifications-test', 1)->get('orders.new')->all();
+
+        $this->assertEquals('custom2', Arr::get($settings, 'orders.new.email'));
     }
 }
