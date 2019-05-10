@@ -19,6 +19,10 @@ You can install the package via composer:
 composer require leeovery/laravel-settings
 ```
 
+``` bash
+php artisan vendor:publish --provider="Leeovery\LaravelSettings\LaravelSettingsServiceProvider" --tag="config"
+```
+
 ## Usage
 
 Given a settings file called `/config/settings-user-notifications.php`
@@ -184,9 +188,10 @@ As you can see we fully key the results but only return the requested subset.
 
 ### TODO
 
-Caching
-Default in DB or file (driver system)
-SettingStore value validation
+- [x] Can access subsets
+- [ ] Caching to cut down on DB queries and general optimise
+- [ ] Driver based approach to allow user to change default system and caching layer.
+- [ ] `SettingStore` value validation
 
 ### Testing
 
