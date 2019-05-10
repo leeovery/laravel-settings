@@ -246,4 +246,19 @@ class PrimitiveValuesTest extends TestCase
             ],
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function ensure_can_fetch_using_subset_when_expecting_non_default_values()
+    {
+        settings('notifications-test', 1)
+            ->set([
+                'orders.new.email' => 'custom2',
+            ]);
+
+        $settings = settings('notifications-test', 1)->get('orders.new')->all();
+
+        $this->assertEquals('custom2', Arr::get($settings, 'orders.new.email'));
+    }
 }

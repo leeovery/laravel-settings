@@ -111,11 +111,11 @@ class LaravelSettings
         if (! is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
 
             // get ALL stored settings for user
-            $storedSettings = collect($this->getStoredSettings()->settings[$this->baseKey]);
+            $storedSettings = $this->getStoredSettings()->settings[$this->baseKey];
 
             // does stored settings have the key we are wanting?
-            if (is_null($key) || $storedSettings->has($key)) {
-                $settings = $this->arrayRecursiveReplace($settings->all(), $storedSettings->all());
+            if (is_null($key) || Arr::has($storedSettings, $key)) {
+                $settings = $this->arrayRecursiveReplace($settings->all(), $storedSettings);
             }
         }
 

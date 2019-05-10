@@ -217,7 +217,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function will_merge_in_correct_stored_settings_when_fetching_subset_but_have_other_settings_stored_too()
+    public function will_merge_in_correct_stored_settings_when_fetching_subset_but_have_other_settings_stored_too__for_object()
     {
         settings('notifications-test', 1)
             ->set([
@@ -228,5 +228,20 @@ class ValuesAsSettingStoreObjectTest extends TestCase
         $settings = settings('notifications-test', 1)->get('global');
         $this->assertArrayNotHasKey('orders', $settings);
         $this->assertArrayHasKey('global', $settings);
+    }
+
+    /**
+     * @test
+     */
+    public function ensure_can_fetch_using_subset_when_expecting_non_default_values__for_object()
+    {
+        settings('notifications-test', 1)
+            ->set([
+                'orders.new.email' => 'custom2',
+            ]);
+
+        $settings = settings('notifications-test', 1)->get('orders.new')->all();
+
+        $this->assertEquals('custom2', Arr::get($settings, 'orders.new.email')->getValue());
     }
 }
