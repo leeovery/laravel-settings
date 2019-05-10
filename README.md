@@ -25,7 +25,6 @@ Given a settings file called `/config/settings-user-notifications.php`
 and with the following contents...
 
 ``` php
-
 return [
     'orders' => [
         'general' => [
@@ -39,13 +38,11 @@ return [
     ],
     ...
 ];
-
 ```
 
 You can do this to fetch the settings:
 
 ``` php
-
 $userId = 100;
 
 settings('user-notifications', $userId)->get();
@@ -62,7 +59,6 @@ settings('user-notifications', $userId)->get();
     ],
 ],
 ...
-
 ```
 
 As you can see, this will return all the above settings for user with the ID of 100.
@@ -72,15 +68,12 @@ Note that those settings won't be different from the defaults as at this point t
 Lets change that now...
 
 ``` php
-
 settings('user-notifications', $userId)->set(['orders.general.email' => false]);
-
 ```
 
 The line above calls set() and passes the key and value. That value is persisted in the DB for that user. So that we can do the following...
 
 ``` php
-
 settings('user-notifications', $userId)->get();
 
 // will return...
@@ -95,7 +88,6 @@ settings('user-notifications', $userId)->get();
     ],
 ],
 ...
-
 ```
 
 `$settings` above will now equal all the default values EXCEPT for the nested key `orders.general.email` where that will equal FALSE, as per the custom change above.
@@ -117,10 +109,8 @@ Eg:
 Now you can `get()` and `set()` the settings from those files...
 
 ``` php
-
 $settings = settings('user-privacy', $userId)->get();
 $settings = settings('social', $userId)->get();
-
 ```
 
 ## Value Object Based Values
@@ -128,7 +118,6 @@ $settings = settings('social', $userId)->get();
 You can use objects as the values in the settings file, like this:
 
 ``` php
-
 return [
     'orders' => [
         'general' => [
@@ -138,7 +127,6 @@ return [
     ],
     ...
 ];
-
 ```
 
 ## Access Subsets Rather Than All Settings
@@ -150,7 +138,6 @@ Eg:
 Given a setting file `/config/settings-email-notifications.php`:
 
 ``` php
-
 return [
     'orders' => [
         'general' => [
@@ -166,23 +153,19 @@ return [
     ],
     ...
 ];
-
 ```
 
 You can store a user edit like this:
 
 ``` php
-
 settings('user-notifications', $userId)->set([
     'orders.digital.status_change.email' => false // just store primitive value here not VO
 ]);
-
 ```
 
 And... you can access the deep `status_change` subset like follows:
 
 ``` php
-
 settings('email-notifications', $userId)->get('orders.digital.status_change');
 
 // will return...
@@ -194,7 +177,6 @@ settings('email-notifications', $userId)->get('orders.digital.status_change');
         ],
     ],
 ],
-
 ```
 
 As you can see we fully key the results but only return the requested subset.
