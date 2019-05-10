@@ -44,9 +44,21 @@ You can do this to fetch the settings:
 ``` php
 $userId = 100;
 $settings = settings('user-notifications', $userId)->get();
+['orders' => [
+    'general' => [
+        'email'  => true,
+        'alerts' => true,
+    ],
+    'status_change' => [
+        'email'  => true,
+        'alerts' => true,
+    ],
+]];
 ```
 
-That will return all the above settings for user with the ID of 100. The settings won't be different from the defaults as at this point the user has not made any changes.
+As you can see, this will return all the above settings for user with the ID of 100.
+
+Note that those settings won't be different from the defaults as at this point the user has not made any changes.
 
 Lets change that now...
 
@@ -58,10 +70,49 @@ The line above calls set() and passes the key and value. That value is persisted
 
 ``` php
 $settings = settings('user-notifications', $userId)->get();
+['orders' => [
+    'general' => [
+        'email'  => false, // NOTE this is different!
+        'alerts' => true,
+    ],
+    'status_change' => [
+        'email'  => true,
+        'alerts' => true,
+    ],
+]];
 ```
 
 $settings above will now return all the default values EXCEPT for the nested key `orders.general.email` where that will equal FALSE, as per the custom change above.
 
+That's the most basic use-case...
+
+But...
+
+## You can do more...
+
+You can setup multiple setting files in the config directory, like this:
+
+``` php
+```
+
+You can also use objects as the values in the settings file, like this:
+
+``` php
+return [
+    'orders'    => [
+        'general'        => [
+            'email'  => SettingStore::make(true, 'You can set a label here'), // option one
+            'alerts' => LaravelSettings::setting(true, 'You can set a label here'), // option two
+        ],
+    ],
+];
+```
+
+### TODO
+
+Caching
+Default in DB or file (driver system)
+SettingStore value validation
 
 ### Testing
 
