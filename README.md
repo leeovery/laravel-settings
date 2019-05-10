@@ -90,7 +90,7 @@ settings('user-notifications', $userId)->get();
 ...
 ```
 
-`$settings` above will now equal all the default values EXCEPT for the nested key `orders.general.email` where that will equal FALSE, as per the custom change above.
+Returned data now equals all the default values EXCEPT for the nested key `orders.general.email` where that will equal FALSE, as per the custom change above.
 
 That's the most basic use-case...
 
