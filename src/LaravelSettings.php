@@ -57,7 +57,6 @@ class LaravelSettings
     public function set(array $newSettings)
     {
         // Fetch defaults and merge in any custom settings for user
-        /** @var Collection $settings */
         $settings = $this->get()->all();
 
         // If current settings we just fetched have the keys from the
