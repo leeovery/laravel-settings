@@ -29,7 +29,7 @@ class FileDefaultRepository implements DefaultRepository
         if (Str::contains($key, '.')) {
             $key = Str::after($key, '.');
             foreach (Arr::dot($defaults) as $dottedKey => $value) {
-                array_set($defaults, $key.'.'.$dottedKey, $value);
+                Arr::set($defaults, $key.'.'.$dottedKey, $value);
                 Arr::forget($defaults, $dottedKey);
             }
             $defaults = array_filter($defaults);

@@ -4,7 +4,7 @@ namespace Leeovery\LaravelSettings;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Leeovery\LaravelSettings\Cache\CacheRepository;
+use Illuminate\Database\Eloquent\Model;
 use Leeovery\LaravelSettings\Defaults\DefaultRepository;
 
 class LaravelSettings
@@ -14,25 +14,31 @@ class LaravelSettings
      */
     private $defaultRepository;
 
-    /**
-     * @var CacheRepository
-     */
-    private $cacheRepository;
-
     private $baseKey;
 
     private $userId;
 
     /**
+     * @var Model
+     */
+    private $model;
+
+    /**
+     * @var SettingsConfig
+     */
+    private $settingsConfig;
+
+    /**
      * LaravelSettings constructor.
      *
      * @param  DefaultRepository  $defaultRepository
-     * @param  CacheRepository  $cacheRepository
+     * @param  SettingsConfig     $settingsConfig
      */
-    public function __construct(DefaultRepository $defaultRepository, CacheRepository $cacheRepository)
+    public function __construct(DefaultRepository $defaultRepository, SettingsConfig $settingsConfig)
     {
         $this->defaultRepository = $defaultRepository;
-        $this->cacheRepository = $cacheRepository;
+        $this->settingsConfig = $settingsConfig;
+        $this->model = $this->settingsConfig->model;
     }
 
     public static function setting($value, $label = null, $validator = null)
@@ -88,7 +94,7 @@ class LaravelSettings
         if (empty($forStoring) && $allStoredSettings[$this->baseKey]) {
             unset($allStoredSettings[$this->baseKey]);
         } else {
-            if (! empty($forStoring)) {
+            if (!empty($forStoring)) {
                 $allStoredSettings[$this->baseKey] = $forStoring;
             }
         }
@@ -107,7 +113,7 @@ class LaravelSettings
         /** @var Collection $settings */
         $settings = $this->defaultRepository->get($this->makeKey($key));
 
-        if (! is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
+        if (!is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
 
             // get ALL stored settings for user
             $storedSettings = $this->getStoredSettings()->settings[$this->baseKey];
@@ -123,7 +129,7 @@ class LaravelSettings
 
     private function makeKey($key = null)
     {
-        return $this->baseKey.(! is_null($key) ? '.'.$key : '');
+        return $this->baseKey.(!is_null($key) ? '.'.$key : '');
     }
 
     /**
@@ -131,9 +137,9 @@ class LaravelSettings
      */
     private function entityHasStoredSettingsForBaseKey(): bool
     {
-        return Setting::where('user_id', $this->userId)
-                      ->where('settings', 'LIKE', "%{$this->baseKey}%")
-                      ->count() > 0;
+        return $this->model::where('user_id', $this->userId)
+                           ->where('settings', 'LIKE', "%{$this->baseKey}%")
+                           ->count() > 0;
     }
 
     /**
@@ -141,7 +147,7 @@ class LaravelSettings
      */
     private function getStoredSettings()
     {
-        return Setting::where('user_id', $this->userId)->first();
+        return $this->model::where('user_id', $this->userId)->first();
     }
 
     public function arrayRecursiveReplace($settings, $fromStorage): Collection
@@ -171,7 +177,7 @@ class LaravelSettings
                     }
                 } else {
                     if (is_a($newSettingValue, SettingStore::class, true)) {
-                        if (! $newSettingValue->compareValues($defaultSettings[$newSettingKey])) {
+                        if (!$newSettingValue->compareValues($defaultSettings[$newSettingKey])) {
                             /** @var SettingStore $newSettingValue */
                             $storeTheseSettings[$newSettingKey] = $newSettingValue->getValue();
                         }
@@ -191,12 +197,12 @@ class LaravelSettings
 
     private function deleteSettingsForUser()
     {
-        return Setting::where('user_id', $this->userId)->delete();
+        return $this->model::where('user_id', $this->userId)->delete();
     }
 
     private function storeSettings($settings)
     {
-        return Setting::updateOrCreate(['user_id' => $this->userId], [
+        return $this->model::updateOrCreate(['user_id' => $this->userId], [
             'user_id'  => $this->userId,
             'settings' => $settings,
         ]);
