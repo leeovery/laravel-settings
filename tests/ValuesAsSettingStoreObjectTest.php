@@ -80,7 +80,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function will_delete_custom_settings_for_user_when_they_have_changed_the_last_one__for_object()
+    public function will_delete_custom_settings_for_user_when_they_have_changed_the_last_one_for_object()
     {
         settings('notifications-test', 1)
             ->set([
@@ -127,7 +127,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function will_allow_setting_multiple_keyed_settings__for_object()
+    public function will_allow_setting_multiple_keyed_settings_for_object()
     {
         settings('notifications-test', 1)
             ->set([
@@ -156,7 +156,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function will_throw_exception_if_settings_key_doesnt_exist_as_default__for_object()
+    public function will_throw_exception_if_settings_key_doesnt_exist_as_default_for_object()
     {
         $this->expectException(InvalidSettingsKey::class);
         settings('i-dont-exist', 1)->get();
@@ -165,7 +165,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_1__for_object(
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_1_for_object(
     )
     {
         $settings = settings('notifications-test', 1)->get('global');
@@ -178,7 +178,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_2__for_object(
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_2_for_object(
     )
     {
         $settings = settings('notifications-test', 1)->get('orders');
@@ -191,7 +191,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_3__for_object(
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_3_for_object(
     )
     {
         $settings = settings('notifications-test', 1)->get('orders.new');
@@ -204,7 +204,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_4__for_object(
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_4_for_object(
     )
     {
         $settings = settings('privacy-test', 1)->get('section1');
@@ -217,7 +217,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function will_merge_in_correct_stored_settings_when_fetching_subset_but_have_other_settings_stored_too__for_object()
+    public function will_merge_in_correct_stored_settings_when_fetching_subset_but_have_other_settings_stored_too_for_object()
     {
         settings('notifications-test', 1)
             ->set([
@@ -233,7 +233,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function ensure_can_fetch_using_subset_when_expecting_non_default_values__for_object()
+    public function ensure_can_fetch_using_subset_when_expecting_non_default_values_for_object()
     {
         settings('notifications-test', 1)
             ->set([
