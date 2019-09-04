@@ -17,14 +17,14 @@
   ],
   "require": {
     "php": "^7.2",
-    "illuminate/config": "~5.8.0|~6.0.0",
-    "illuminate/database": "~5.8.0|~6.0.0",
-    "illuminate/support": "~5.8.0|~6.0.0",
+    "illuminate/config": "^5.8|^6.0",
+    "illuminate/database": "^5.8|^6.0",
+    "illuminate/support": "^5.8|^6.0",
     "myclabs/deep-copy": "^1.9"
   },
   "require-dev": {
-    "orchestra/testbench": "^3.5",
-    "phpunit/phpunit": "^7.0"
+    "orchestra/testbench": "^3.8|^4.0",
+    "phpunit/phpunit": "^8.2"
   },
   "autoload": {
     "files": [
