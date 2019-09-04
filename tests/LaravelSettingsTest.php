@@ -3,8 +3,10 @@
 namespace Leeovery\LaravelSettings\Tests;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use Leeovery\LaravelSettings\Event\SettingUpdated;
 
 class LaravelSettingsTest extends TestCase
 {
@@ -26,6 +28,27 @@ class LaravelSettingsTest extends TestCase
         $this->assertEquals('111', (string) Arr::get($settings, 'global.email'));
     }
 
+    /**
+     * @test
+     */
+    public function will_dispatch_event_when_settings_changed()
+    {
+        Event::fake([SettingUpdated::class]);
+        settings('notifications-test', 1)->set(['global.email' => '111']);
+        Event::assertDispatched(SettingUpdated::class);
+    }
+
+    /**
+     * @test
+     */
+    public function will_dispatch_event_when_settings_changed_back_to_default()
+    {
+        settings('notifications-test', 1)->set(['global.email' => '111']);
+        Event::fake([SettingUpdated::class]);
+        settings('notifications-test', 1)->set(['global.email' => '000']);
+        Event::assertDispatched(SettingUpdated::class);
+    }
+
     public function setUp(): void
     {
         parent::setUp();
@@ -44,7 +67,7 @@ class LaravelSettingsTest extends TestCase
 
 class CustomSettingModel extends Model
 {
-    protected $table = 'settings';
+    protected $table   = 'settings';
 
     protected $guarded = [];
 

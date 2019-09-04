@@ -5,6 +5,7 @@ namespace Leeovery\LaravelSettings;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Leeovery\LaravelSettings\Event\SettingUpdated;
 use Leeovery\LaravelSettings\Defaults\DefaultRepository;
 
 class LaravelSettings
@@ -106,6 +107,8 @@ class LaravelSettings
         } else {
             $this->storeSettings($allStoredSettings);
         }
+
+        SettingUpdated::dispatch($newSettings, $settings, $allStoredSettings, $this->userId);
     }
 
     public function get($key = null): Collection
