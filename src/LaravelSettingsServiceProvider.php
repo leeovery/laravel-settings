@@ -2,36 +2,23 @@
 
 namespace Leeovery\LaravelSettings;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Container\Container;
 use Leeovery\LaravelSettings\Defaults\DefaultRepository;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class LaravelSettingsServiceProvider extends ServiceProvider
+class LaravelSettingsServiceProvider extends PackageServiceProvider
 {
-    /**
-     * Bootstrap the application services.
-     */
-    public function boot()
+    public function configurePackage(Package $package): void
     {
-        /*
-         * Optional methods to load your package assets
-         */
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('laravel-settings.php'),
-            ], 'config');
-        }
+        $package
+            ->name('laravel-settings')
+            ->hasMigration('create_settings_table')
+            ->hasConfigFile('laravel-settings');
     }
 
-    /**
-     * Register the application services.
-     */
-    public function register()
+    public function packageRegistered()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-settings');
-
         $config = config('laravel-settings');
 
         $this->app->bind(DefaultRepository::class, $config['defaults']['provider']);

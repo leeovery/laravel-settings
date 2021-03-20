@@ -2,6 +2,9 @@
 
 namespace Leeovery\LaravelSettings\Tests;
 
+use CreateSettingsTable;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Schema;
 use Leeovery\LaravelSettings\LaravelSettingsServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -11,8 +14,7 @@ class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        $this->loadLaravelMigrations(['--database' => 'testbench']);
-        $this->artisan('migrate', ['--database' => 'testbench'])->run();
+        $this->setUpDatabase($this->app);
     }
 
     protected function getPackageProviders($app)
@@ -25,7 +27,7 @@ class TestCase extends OrchestraTestCase
     /**
      * Define environment setup.
      *
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      * @return void
      */
     protected function getEnvironmentSetUp($app)
@@ -37,5 +39,17 @@ class TestCase extends OrchestraTestCase
             'database' => ':memory:',
             'prefix'   => '',
         ]);
+    }
+
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     */
+    protected function setUpDatabase($app)
+    {
+        Schema::dropAllTables();
+
+        include_once __DIR__.'/../database/migrations/create_settings_table.php.stub';
+
+        (new CreateSettingsTable())->up();
     }
 }

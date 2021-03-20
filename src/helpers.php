@@ -8,7 +8,7 @@ if (! function_exists('settings')) {
      * @param  null  $userId
      * @return LaravelSettings
      */
-    function settings($baseKey = null, $userId = null)
+    function settings($baseKey = null, $userId = null): LaravelSettings
     {
         $setting = app('laravel-settings');
 
@@ -16,8 +16,8 @@ if (! function_exists('settings')) {
             return $setting;
         }
 
-        /** @var LaravelSettings $setting */
-        return $setting->baseKey($baseKey)
-                       ->forUser($userId);
+        return $setting
+            ->baseKey($baseKey)
+            ->forUser($userId);
     }
 }

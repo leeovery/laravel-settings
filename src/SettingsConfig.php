@@ -6,16 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class SettingsConfig
 {
-    /**
-     * @var Model
-     */
-    public $model;
+    public Model $model;
 
-    /**
-     * SettingsConfig constructor.
-     *
-     * @param  Model  $model
-     */
     public function __construct(Model $model)
     {
         $this->model = $model;
