@@ -2,39 +2,24 @@
 
 namespace Leeovery\LaravelSettings;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Leeovery\LaravelSettings\Event\SettingUpdated;
 use Leeovery\LaravelSettings\Defaults\DefaultRepository;
+use Leeovery\LaravelSettings\Event\SettingUpdated;
 
 class LaravelSettings
 {
-    /**
-     * @var DefaultRepository
-     */
-    private $defaultRepository;
+    private DefaultRepository $defaultRepository;
 
     private $baseKey;
 
     private $userId;
 
-    /**
-     * @var Model
-     */
-    private $model;
+    private Model $model;
 
-    /**
-     * @var SettingsConfig
-     */
-    private $settingsConfig;
+    private SettingsConfig $settingsConfig;
 
-    /**
-     * LaravelSettings constructor.
-     *
-     * @param  DefaultRepository  $defaultRepository
-     * @param  SettingsConfig     $settingsConfig
-     */
     public function __construct(DefaultRepository $defaultRepository, SettingsConfig $settingsConfig)
     {
         $this->defaultRepository = $defaultRepository;
@@ -42,19 +27,19 @@ class LaravelSettings
         $this->model = $this->settingsConfig->model;
     }
 
-    public static function setting($value, $label = null, $validator = null)
+    public static function setting($value, $label = null, $validator = null): SettingStore
     {
         return SettingStore::make($value, $label, $validator);
     }
 
-    public function baseKey($baseKey)
+    public function baseKey($baseKey): self
     {
         $this->baseKey = $baseKey;
 
         return $this;
     }
 
-    public function forUser($userId)
+    public function forUser($userId): self
     {
         $this->userId = $userId;
 
@@ -81,11 +66,10 @@ class LaravelSettings
         }
 
         // Now fetch defaults with no custom changes...
-        /** @var Collection $defaults */
         $defaults = $this->defaultRepository->get($this->baseKey);
 
         // Now remove all defaults from the new settings array we
-        // created above. Whatever's left over needs persisting.
+        // created above. Whatever is left over needs persisting.
         $forStoring = $this->arrayRecursiveDiff($settings, $defaults->all());
 
         // Get ALL stored settings for user.
@@ -95,7 +79,7 @@ class LaravelSettings
         if (empty($forStoring) && $allStoredSettings[$this->baseKey]) {
             unset($allStoredSettings[$this->baseKey]);
         } else {
-            if (!empty($forStoring)) {
+            if (! empty($forStoring)) {
                 $allStoredSettings[$this->baseKey] = $forStoring;
             }
         }
@@ -113,10 +97,9 @@ class LaravelSettings
 
     public function get($key = null): Collection
     {
-        /** @var Collection $settings */
         $settings = $this->defaultRepository->get($this->makeKey($key));
 
-        if (!is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
+        if (! is_null($this->userId) && $this->entityHasStoredSettingsForBaseKey()) {
 
             // get ALL stored settings for user
             $storedSettings = $this->getStoredSettings()->settings[$this->baseKey];
@@ -130,24 +113,18 @@ class LaravelSettings
         return $settings;
     }
 
-    private function makeKey($key = null)
+    private function makeKey($key = null): string
     {
-        return $this->baseKey.(!is_null($key) ? '.'.$key : '');
+        return $this->baseKey.(! is_null($key) ? '.'.$key : '');
     }
 
-    /**
-     * @return bool
-     */
     private function entityHasStoredSettingsForBaseKey(): bool
     {
         return $this->model::where('user_id', $this->userId)
-                           ->where('settings', 'LIKE', "%{$this->baseKey}%")
-                           ->count() > 0;
+                ->where('settings', 'LIKE', "%{$this->baseKey}%")
+                ->count() > 0;
     }
 
-    /**
-     * @return mixed
-     */
     private function getStoredSettings()
     {
         return $this->model::where('user_id', $this->userId)->first();
@@ -168,7 +145,7 @@ class LaravelSettings
         return collect($settings);
     }
 
-    private function arrayRecursiveDiff($newSettings, $defaultSettings)
+    private function arrayRecursiveDiff($newSettings, $defaultSettings): array
     {
         $storeTheseSettings = [];
         foreach ($newSettings as $newSettingKey => $newSettingValue) {
@@ -180,7 +157,7 @@ class LaravelSettings
                     }
                 } else {
                     if (is_a($newSettingValue, SettingStore::class, true)) {
-                        if (!$newSettingValue->compareValues($defaultSettings[$newSettingKey])) {
+                        if (! $newSettingValue->compareValues($defaultSettings[$newSettingKey])) {
                             /** @var SettingStore $newSettingValue */
                             $storeTheseSettings[$newSettingKey] = $newSettingValue->getValue();
                         }
