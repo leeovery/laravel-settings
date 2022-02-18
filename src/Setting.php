@@ -8,7 +8,7 @@ class Setting extends Model
 {
     protected $guarded = [];
 
-    protected $casts   = [
+    protected $casts = [
         'settings' => 'json',
     ];
 }

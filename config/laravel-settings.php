@@ -29,7 +29,7 @@ return [
     /**
      * This is the repository for fetching and stored settings.
      */
-    'defaults' => [
+    'defaults'       => [
         'provider' => \Leeovery\LaravelSettings\Defaults\FileDefaultRepository::class,
     ],
 

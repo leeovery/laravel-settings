@@ -2,11 +2,11 @@
 
 namespace Leeovery\LaravelSettings\Defaults;
 
-use function DeepCopy\deep_copy;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Leeovery\LaravelSettings\Exceptions\InvalidSettingsKey;
+use function DeepCopy\deep_copy;
 
 class FileDefaultRepository implements DefaultRepository
 {
@@ -25,7 +25,7 @@ class FileDefaultRepository implements DefaultRepository
 
     private function ensureSubSetsAreProperlyKeyed(string $key, $defaults)
     {
-        // ensure results are fully keyed when only fetching a subset of data...
+        // Ensure results are fully keyed when only fetching a subset of data.
         if (Str::contains($key, '.')) {
             $key = Str::after($key, '.');
             foreach (Arr::dot($defaults) as $dottedKey => $value) {
@@ -38,7 +38,7 @@ class FileDefaultRepository implements DefaultRepository
         return $defaults;
     }
 
-    private function makeKey($key)
+    private function makeKey($key): string
     {
         return config('laravel-settings.config-pre-key').'-'.$key;
     }

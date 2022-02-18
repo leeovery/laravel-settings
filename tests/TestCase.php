@@ -17,6 +17,18 @@ class TestCase extends OrchestraTestCase
         $this->setUpDatabase($this->app);
     }
 
+    /**
+     * @param  \Illuminate\Foundation\Application  $app
+     */
+    protected function setUpDatabase($app)
+    {
+        Schema::dropAllTables();
+
+        include_once __DIR__.'/../database/migrations/create_settings_table.php.stub';
+
+        (new CreateSettingsTable())->up();
+    }
+
     protected function getPackageProviders($app)
     {
         return [
@@ -39,17 +51,5 @@ class TestCase extends OrchestraTestCase
             'database' => ':memory:',
             'prefix'   => '',
         ]);
-    }
-
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function setUpDatabase($app)
-    {
-        Schema::dropAllTables();
-
-        include_once __DIR__.'/../database/migrations/create_settings_table.php.stub';
-
-        (new CreateSettingsTable())->up();
     }
 }

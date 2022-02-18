@@ -56,7 +56,7 @@ class LaravelSettings
         foreach ($newSettings as $key => $value) {
             if (Arr::has($settings, $key)) {
                 // If value here is an instance of SettingsStore then use method
-                // on object. Otherwise simply set value directly to array...
+                // on object. Otherwise, simply set value directly to array.
                 if (is_a($currentValue = Arr::get($settings, $key), SettingStore::class, true)) {
                     $currentValue->set($value);
                 } else {
@@ -104,7 +104,7 @@ class LaravelSettings
             // get ALL stored settings for user
             $storedSettings = $this->getStoredSettings()->settings[$this->baseKey];
 
-            // does stored settings have the key we are wanting?
+            // Do stored settings have the key we are wanting?
             if (is_null($key) || Arr::has($storedSettings, $key)) {
                 $settings = $this->arrayRecursiveReplace($settings->all(), $storedSettings);
             }

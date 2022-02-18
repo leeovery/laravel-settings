@@ -70,7 +70,7 @@ class PrimitiveValuesTest extends TestCase
     public function can_get_settings_for_user()
     {
         $settings = settings('notifications-test')->forUser(1)
-                                                  ->get();
+            ->get();
         $this->assertEquals($settings->all(), $this->notificationSettings);
     }
 
@@ -86,7 +86,7 @@ class PrimitiveValuesTest extends TestCase
             ]);
 
         $settings = settings('notifications-test')->forUser(1)
-                                                  ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals('123', Arr::get($settings, 'global.email'));
@@ -105,7 +105,7 @@ class PrimitiveValuesTest extends TestCase
             ]);
 
         $settings = settings('notifications-test')->forUser(1)
-                                                  ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals('vvv', Arr::get($settings, 'global.email'));
@@ -134,7 +134,7 @@ class PrimitiveValuesTest extends TestCase
             ]);
 
         $settings = settings('notifications-test')->forUser(1)
-                                                  ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals(null, Arr::get($settings, 'i.do.not.exist'));
@@ -159,9 +159,9 @@ class PrimitiveValuesTest extends TestCase
             ]);
 
         $privacySettings = settings('privacy-test')->forUser(1)
-                                                   ->get();
+            ->get();
         $notificationSettings = settings('notifications-test')->forUser(1)
-                                                              ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals('xxx', Arr::get($notificationSettings, 'global.email'));
