@@ -8,23 +8,13 @@ class SettingStore implements JsonSerializable
 {
     private $value;
 
-    /**
-     * @var null
-     */
-    private $label;
+    private ?string $label;
 
     /**
      * @var null
      */
     private $validator;
 
-    /**
-     * SettingStore constructor.
-     *
-     * @param $value
-     * @param  null  $label
-     * @param  null  $validator
-     */
     public function __construct($value, $label = null, $validator = null)
     {
         $this->value = $value;
@@ -32,23 +22,16 @@ class SettingStore implements JsonSerializable
         $this->validator = $validator;
     }
 
-    public static function make($value, $label = null, $validator = null)
+    public static function make($value, $label = null, $validator = null): SettingStore
     {
         return new SettingStore($value, $label, $validator);
     }
 
-    /**
-     * @param  SettingStore  $settingStore
-     * @return bool
-     */
     public function compareValues(SettingStore $settingStore): bool
     {
         return $this->getValue() === $settingStore->getValue();
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue()
     {
         return $this->value;
@@ -66,17 +49,12 @@ class SettingStore implements JsonSerializable
         return json_encode($this->jsonSerialize());
     }
 
-    /**
-     * Convert the object into something JSON serializable.
-     *
-     * @return array
-     */
     public function jsonSerialize()
     {
         return $this->toArray();
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'value' => $this->getValue(),
@@ -84,9 +62,6 @@ class SettingStore implements JsonSerializable
         ];
     }
 
-    /**
-     * @return string|null
-     */
     public function getLabel()
     {
         return $this->label;

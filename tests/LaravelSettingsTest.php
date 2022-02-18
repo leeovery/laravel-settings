@@ -2,10 +2,10 @@
 
 namespace Leeovery\LaravelSettings\Tests;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Leeovery\LaravelSettings\Event\SettingUpdated;
 
 class LaravelSettingsTest extends TestCase
@@ -67,11 +67,11 @@ class LaravelSettingsTest extends TestCase
 
 class CustomSettingModel extends Model
 {
-    protected $table   = 'settings';
+    protected $table = 'settings';
 
     protected $guarded = [];
 
-    protected $casts   = [
+    protected $casts = [
         'settings' => 'json',
     ];
 }

@@ -8,22 +8,14 @@ class SettingUpdated
 {
     use Dispatchable;
 
-    public  $fullMergedSettings;
+    public $fullMergedSettings;
 
-    public  $userId;
+    public $userId;
 
     public $storedSettings;
 
     public $settingsBeingSet;
 
-    /**
-     * SettingUpdated constructor.
-     *
-     * @param $settingsBeingSet
-     * @param $fullMergedSettings
-     * @param $storedSettings
-     * @param $userId
-     */
     public function __construct($settingsBeingSet, $fullMergedSettings, $storedSettings, $userId)
     {
         $this->settingsBeingSet = $settingsBeingSet;

@@ -88,7 +88,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
             ]);
 
         $settings = settings('notifications-test')->forUser(1)
-                                                  ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals('vvv', (string) Arr::get($settings, 'global.email'));
@@ -117,7 +117,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
             ]);
 
         $settings = settings('notifications-test')->forUser(1)
-                                                  ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals(null, Arr::get($settings, 'i.do.not.exist'));
@@ -142,9 +142,9 @@ class ValuesAsSettingStoreObjectTest extends TestCase
             ]);
 
         $privacySettings = settings('privacy-test')->forUser(1)
-                                                   ->get();
+            ->get();
         $notificationSettings = settings('notifications-test')->forUser(1)
-                                                              ->get();
+            ->get();
 
         $this->assertEquals(Setting::where('user_id', 1)->count(), 1);
         $this->assertEquals('xxx', (string) Arr::get($notificationSettings, 'global.email'));
@@ -165,8 +165,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_1_for_object(
-    )
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_1_for_object()
     {
         $settings = settings('notifications-test', 1)->get('global');
 
@@ -178,8 +177,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_2_for_object(
-    )
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_2_for_object()
     {
         $settings = settings('notifications-test', 1)->get('orders');
 
@@ -191,8 +189,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_3_for_object(
-    )
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_3_for_object()
     {
         $settings = settings('notifications-test', 1)->get('orders.new');
 
@@ -204,8 +201,7 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_4_for_object(
-    )
+    public function can_specify_key_in_get_method_to_pluck_out_sub_groups_but_still_have_them_keyed_fully_4_for_object()
     {
         $settings = settings('privacy-test', 1)->get('section1');
 
@@ -217,7 +213,8 @@ class ValuesAsSettingStoreObjectTest extends TestCase
     /**
      * @test
      */
-    public function will_merge_in_correct_stored_settings_when_fetching_subset_but_have_other_settings_stored_too_for_object()
+    public function will_merge_in_correct_stored_settings_when_fetching_subset_but_have_other_settings_stored_too_for_object(
+    )
     {
         settings('notifications-test', 1)
             ->set([
